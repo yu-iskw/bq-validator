@@ -1,0 +1,24 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "bq_validator"
+authors = [{name = "yu-iskw"}]
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = ["License :: OSI Approved :: Apache Software License"]
+dynamic = ["version", "description"]
+
+
+#[distutils]
+#index-servers =
+#  pypi
+#  pypitest
+#
+#[pypi]
+#username: yu-iskw
+#
+#[pypitest]
+#repository: https://test.pypi.org/legacy/
+#username: yu-iskw
