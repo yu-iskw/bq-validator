@@ -9,16 +9,3 @@ readme = "README.md"
 license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: Apache Software License"]
 dynamic = ["version", "description"]
-
-
-#[distutils]
-#index-servers =
-#  pypi
-#  pypitest
-#
-#[pypi]
-#username: yu-iskw
-#
-#[pypitest]
-#repository: https://test.pypi.org/legacy/
-#username: yu-iskw

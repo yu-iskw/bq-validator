@@ -39,7 +39,7 @@ requirements_path = os.path.join(
 setup(
     name='bq-validator',
     version=bq_validator.__version__,
-    packages=find_packages(),
+    packages=find_packages(exclude=['*resources*']),
     install_requires=parse_requirements(requirements_path),
     entry_points={
         "console_scripts": [
