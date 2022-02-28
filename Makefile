@@ -27,7 +27,7 @@ format-python:
 # Run the unit tests.
 .PHONEY: test
 test:
-	bash ./dev/run_python_tests.sh
+	bash ./dev/test_python.sh
 
 # Build the package
 build: clean format test
