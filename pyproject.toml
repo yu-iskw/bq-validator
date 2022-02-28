@@ -16,11 +16,8 @@ dependencies = [
     "click-completion ==0.5.2",
     "google-cloud-bigquery >=1.25.0,<3.0.0",
 ]
-description-file = "README.md"
 readme = "README.md"
 license = { file = "LICENSE" }
-author-email = "yuu.ishikawa+bq-validator@gmail.com"
-home-page = "https://github.com/yu-iskw/bq-validator"
 requires-python = ">=3.6.1"
 classifiers = [
     "Intended Audience :: Information Technology",
