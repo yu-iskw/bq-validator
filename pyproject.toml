@@ -57,7 +57,7 @@ dev = [
 ]
 
 [project.scripts]
-bq-validator = 'bq_valiadtor.cli:main'
+bq-validator = 'bq_validator.cli:main'
 
 
 [tool.pytest.ini_options]
