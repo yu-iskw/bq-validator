@@ -28,9 +28,9 @@ target=${1:?"target is not set"}
 SOURCE_DATE_EPOCH=$(date +%s)
 
 if [[ "$target" == "pypi" ]] ; then
-  flit publish --repository "${target}" --pypirc "${MODULE_DIR}/.pypirc"
+  flit publish --repository "${target}" --pypirc "${MODULE_DIR}/.pypirc" --setup-py
 elif [[ "$target" == "testpypi" ]] ; then
-  flit publish --repository "${target}" --pypirc "${MODULE_DIR}/.pypirc"
+  flit publish --repository "${target}" --pypirc "${MODULE_DIR}/.pypirc" --setup-py
 else
   echo "No such target ${target}"
   exit 1
