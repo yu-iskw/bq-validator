@@ -2,6 +2,9 @@ name: Test python
 
 on:
   pull_request:
+    paths:
+      - 'bq_validator/**/*.py'
+      - 'tests/**/*.py'
   push:
     branches:
       - master
