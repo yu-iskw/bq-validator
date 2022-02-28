@@ -14,6 +14,12 @@ The `bq query --dry_run` command enables us to validate queries.
 However, the `bq` command doesn't support OIDC and impersonate service account.
 When we take advantage of OIDC and impersonate service account, the `bq-validator` command would be useful.
 
+## Install
+The package is available on [pypi](https://pypi.org/project/bq-validator/)
+```bash
+pip install -U bq-validator
+```
+
 ## How to use
 
 ```bash
