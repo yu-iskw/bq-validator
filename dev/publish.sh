@@ -21,4 +21,4 @@ MODULE_DIR="$(dirname "$SCRIPT_DIR")"
 
 cd "$MODULE_DIR"
 
-flit publish
+flit publish --repository "testpypi"

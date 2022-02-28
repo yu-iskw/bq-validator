@@ -15,6 +15,7 @@
 #  limitations under the License.
 set -e
 
+# Constants
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 MODULE_DIR="$(dirname "$SCRIPT_DIR")"
 

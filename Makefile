@@ -30,8 +30,8 @@ test:
 	bash ./dev/run_python_tests.sh
 
 # Build the package
-build: clean lint test
-	python -m build
+build: clean format test
+	flit build
 
 clean:
 	bash ./dev/clean.sh

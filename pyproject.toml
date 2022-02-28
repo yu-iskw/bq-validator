@@ -1,16 +1,27 @@
 [build-system]
-requires = ["flit"]
-build-backend = "flit.buildapi"
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
 
-#[project]
-#license = { file = "LICENSE" }
-#dynamic = ["version", "description"]
+[tool.flit.module]
+name = "bq_validator"
 
-[tool.flit.metadata]
-module = "bq_validator"
-author = "yu-siwk"
+[project]
+name = "bq-validator"
+authors = [
+    {name = "yu-iskw", email = "yuu.ishikawa-bq-validator@gmail.com" },
+]
+dynamic = ["version", "description"]
+dependencies = [
+    "click ==8.0.3",
+    "click-completion ==0.5.2",
+    "google-cloud-bigquery >=2.0.0,<3.0.0",
+]
+description-file = "README.md"
+readme = "README.md"
+license = { file = "LICENSE" }
 author-email = "yuu.ishikawa+bq-validator@gmail.com"
 home-page = "https://github.com/yu-iskw/bq-validator"
+requires-python = ">=3.6.1"
 classifiers = [
     "Intended Audience :: Information Technology",
     "Intended Audience :: System Administrators",
@@ -29,19 +40,8 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
 ]
-requires = [
-    "click ==8.0.3",
-    "click-completion ==0.5.2",
-    "google-cloud-bigquery >=2.0.0,<3.0.0",
-]
-description-file = "README.md"
-requires-python = ">=3.6.1"
 
-
-[tool.flit.metadata.urls]
-Documentation = "https://github.com/yu-iskw/bq-validator"
-
-[tool.flit.metadata.requires-extra]
+[project.optional-dependencies]
 test = [
     "pytest >=6.2.4,<7.0.0",
     "mypy ==0.910",
@@ -69,13 +69,14 @@ all = [
     "uvicorn[standard] >=0.12.0,<0.16.0",
 ]
 
-[console_scripts]
+[project.scripts]
 bq-validator = 'bq_valiadtor.cli:main'
+
 
 [tool.pytest.ini_options]
 addopts = [
-  "--strict-config",
-  "--strict-markers",
+    "--strict-config",
+    "--strict-markers",
 ]
 xfail_strict = true
 junit_family = "xunit2"
