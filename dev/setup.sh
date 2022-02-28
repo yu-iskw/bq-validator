@@ -23,4 +23,5 @@ cd "$MODULE_DIR"
 
 FLIT_VERSION="3.7.1"
 pip install -U flit=="$FLIT_VERSION"
-flit install --deps develop --symlink
+#flit install --deps develop --symlink
+flit install --symlink
