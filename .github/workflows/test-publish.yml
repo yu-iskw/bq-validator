@@ -31,6 +31,7 @@ jobs:
         run: bash dev/setup.sh
       - name: Test publish
         env:
+          # SEE https://packaging.python.org/en/latest/specifications/pypirc/?highlight=token#using-a-pypi-token
           FLIT_USERNAME: __token__
           FLIT_PASSWORD: ${{ secrets.TESTPYPI_API_TOKEN }}
         run: bash dev/publish.sh "pypi"
