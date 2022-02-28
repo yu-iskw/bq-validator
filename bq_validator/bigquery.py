@@ -45,16 +45,22 @@ def create_bigquery_client(client_project_id: Optional[str] = None,
     # pylint: disable=R1705
     if impersonate_service_account is None:
         credentials = get_default_credentials(project_id=client_project_id)
-        return bigquery.Client(credentials=credentials, project=client_project_id, location=location)
+        return bigquery.Client(credentials=credentials,
+                               project=client_project_id,
+                               location=location)
     else:
-        credentials = get_impersonate_credentials(impersonate_service_account=impersonate_service_account,
-                                                  quoted_project_id=client_project_id,
-                                                  scopes=scopes,
-                                                  lifetime=lifetime)
-        return bigquery.Client(credentials=credentials, project=client_project_id, location=location)
+        credentials = get_impersonate_credentials(
+            impersonate_service_account=impersonate_service_account,
+            quoted_project_id=client_project_id,
+            scopes=scopes,
+            lifetime=lifetime)
+        return bigquery.Client(credentials=credentials,
+                               project=client_project_id,
+                               location=location)
 
 
-def get_default_credentials(project_id: Optional[str] = None) -> auth.credentials.Credentials:
+def get_default_credentials(
+        project_id: Optional[str] = None) -> auth.credentials.Credentials:
     """Get the default credentials"""
     if project_id is not None:
         credentials, _ = auth.default(quota_project_id=project_id)
@@ -63,10 +69,11 @@ def get_default_credentials(project_id: Optional[str] = None) -> auth.credential
     return credentials
 
 
-def get_impersonate_credentials(impersonate_service_account: str,
-                                quoted_project_id: Optional[str] = None,
-                                scopes: Optional[List[str]] = None,
-                                lifetime: Optional[int] = None) -> impersonated_credentials.Credentials:
+def get_impersonate_credentials(
+        impersonate_service_account: str,
+        quoted_project_id: Optional[str] = None,
+        scopes: Optional[List[str]] = None,
+        lifetime: Optional[int] = None) -> impersonated_credentials.Credentials:
     """Get a impersonate credentials"""
     # Create a impersonated service account
     if scopes is None:
@@ -78,15 +85,18 @@ def get_impersonate_credentials(impersonate_service_account: str,
 
     source_credentials, _ = auth.default()
     if quoted_project_id is not None:
-        source_credentials, quoted_project_id = auth.default(quota_project_id=quoted_project_id)
-    target_credentials = impersonated_credentials.Credentials(source_credentials=source_credentials,
-                                                              target_principal=impersonate_service_account,
-                                                              target_scopes=scopes,
-                                                              lifetime=lifetime)
+        source_credentials, quoted_project_id = auth.default(
+            quota_project_id=quoted_project_id)
+    target_credentials = impersonated_credentials.Credentials(
+        source_credentials=source_credentials,
+        target_principal=impersonate_service_account,
+        target_scopes=scopes,
+        lifetime=lifetime)
     return target_credentials
 
 
-def validate_query(client: bigquery.Client, query: str) -> Tuple[bool, Optional[str]]:
+def validate_query(client: bigquery.Client,
+                   query: str) -> Tuple[bool, Optional[str]]:
     """Validate q query
 
     Args:

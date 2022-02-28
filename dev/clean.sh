@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #  Licensed to the Apache Software Foundation (ASF) under one or more
 #  contributor license agreements.  See the NOTICE file distributed with
 #  this work for additional information regarding copyright ownership.
@@ -12,7 +13,12 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-"""
-`bq-validator` enables us to validate BigQuery queries.
-"""
-__version__ = "0.1.0"
+set -e
+set -x
+
+if [ -d 'dist' ] ; then
+    rm -r dist
+fi
+if [ -d 'site' ] ; then
+    rm -r site
+fi

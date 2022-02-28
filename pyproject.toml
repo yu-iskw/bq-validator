@@ -1,27 +1,86 @@
 [build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
-]
-build-backend = "setuptools.build_meta"
+requires = ["flit"]
+build-backend = "flit.buildapi"
 
-[project]
-name = "bq_validator"
-authors = [{ name = "yu-iskw" }]
-readme = "README.md"
-license = { file = "LICENSE" }
+#[project]
+#license = { file = "LICENSE" }
+#dynamic = ["version", "description"]
+
+[tool.flit.metadata]
+module = "bq_validator"
+author = "yu-siwk"
+author-email = "yuu.ishikawa+bq-validator@gmail.com"
+home-page = "https://github.com/yu-iskw/bq-validator"
 classifiers = [
-    'Development Status :: 4 - Beta',
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+    "Development Status :: 4 - Beta",
     "License :: OSI Approved :: Apache Software License",
-    'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.6',
-    'Programming Language :: Python :: 3.7',
-    'Programming Language :: Python :: 3.8',
-    'Programming Language :: Python :: 3.9',
-    'Programming Language :: Python :: 3.10',
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
 ]
-dynamic = ["version", "description"]
+requires = [
+    "click ==8.0.3",
+    "click-completion ==0.5.2",
+    "google-cloud-bigquery >=2.0.0,<3.0.0",
+]
+description-file = "README.md"
+requires-python = ">=3.6.1"
 
+
+[tool.flit.metadata.urls]
+Documentation = "https://github.com/yu-iskw/bq-validator"
+
+[tool.flit.metadata.requires-extra]
+test = [
+    "pytest >=6.2.4,<7.0.0",
+    "mypy ==0.910",
+    "flake8 >=3.8.3,<4.0.0",
+    "black ==21.9b0",
+    "isort >=5.0.6,<6.0.0",
+    "yapf >=0.29.0",
+]
+dev = [
+    "flit ==3.7.1",
+    "build ==0.7.0",
+    "yapf >=0.29.0",
+    "pyyaml >=5.3",
+    "pdoc3 >=0.9.2",
+]
+all = [
+    "requests >=2.24.0,<3.0.0",
+    "jinja2 >=2.11.2,<4.0.0",
+    "python-multipart >=0.0.5,<0.0.6",
+    "itsdangerous >=1.1.0,<3.0.0",
+    "pyyaml >=5.3.1,<6.0.0",
+    "ujson >=4.0.1,<5.0.0",
+    "orjson >=3.2.1,<4.0.0",
+    "email_validator >=1.1.1,<2.0.0",
+    "uvicorn[standard] >=0.12.0,<0.16.0",
+]
 
 [console_scripts]
 bq-validator = 'bq_valiadtor.cli:main'
+
+[tool.pytest.ini_options]
+addopts = [
+  "--strict-config",
+  "--strict-markers",
+]
+xfail_strict = true
+junit_family = "xunit2"
+filterwarnings = [
+    "error",
+    # TODO: needed by asyncio in Python 3.9.7 https://bugs.python.org/issue45097, try to remove on 3.9.8
+    'ignore:The loop argument is deprecated since Python 3\.8, and scheduled for removal in Python 3\.10:DeprecationWarning:asyncio',
+]
