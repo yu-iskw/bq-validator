@@ -15,4 +15,4 @@
 """
 The `bq-validator` command enables us to validate BigQuery queries.
 """
-__version__ = "0.2.1"
+__version__ = "0.4.0"
