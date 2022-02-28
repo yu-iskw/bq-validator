@@ -24,6 +24,9 @@ cd "$MODULE_DIR"
 # Arguments
 target=${1:?"target is not set"}
 
+# SEE https://flit.readthedocs.io/en/latest/reproducible.html
+SOURCE_DATE_EPOCH=$(date +%s)
+
 if [[ "$target" == "pypi" ]] ; then
   flit publish --repository "${target}" --pypirc "${MODULE_DIR}/.pypirc"
 elif [[ "$target" == "testpypi" ]] ; then

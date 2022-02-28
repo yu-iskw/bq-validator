@@ -1,6 +1,7 @@
 name: Test publish (testpypi)
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main

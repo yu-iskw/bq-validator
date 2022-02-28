@@ -37,7 +37,5 @@ jobs:
         run: bash dev/lint_python.sh
       - name: Test
         run: bash dev/test_python.sh
-      - name: Test installation
-        run: flit install --symlink
       - name: Check the `bq-validator` command
         run: bash dev/test_entry_point.sh
