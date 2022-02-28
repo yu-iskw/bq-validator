@@ -1,6 +1,5 @@
 exclude tests
-exclude.gitignore
-exclude.style.yapf
+exclude .gitignore
+exclude .style.yapf
 exclude Makefile
 exclude pylintrc
-exclude target

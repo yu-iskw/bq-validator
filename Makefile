@@ -21,3 +21,7 @@ lint-python:
 .PHONEY: test
 test:
 	bash ./dev/run_python_tests.sh
+
+# Build the package
+build: lint test
+	python -m build

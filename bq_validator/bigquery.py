@@ -16,7 +16,6 @@
 from typing import List, Optional, Tuple
 
 from google import auth
-from google.cloud import exceptions
 from google.auth import impersonated_credentials
 from google.cloud import bigquery
 
@@ -104,5 +103,6 @@ def validate_query(client: bigquery.Client, query: str) -> Tuple[bool, Optional[
     try:
         client.query(query=query, job_config=job_config)
         return True, None
+    # pylint: disable=W0703
     except Exception as e:
         return False, e
