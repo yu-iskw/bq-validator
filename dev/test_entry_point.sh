@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 #  Licensed to the Apache Software Foundation (ASF) under one or more
 #  contributor license agreements.  See the NOTICE file distributed with
 #  this work for additional information regarding copyright ownership.
@@ -14,21 +14,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 set -e
-set -x
 
-SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-MODULE_DIR="$(dirname "$SCRIPT_DIR")"
-
-cd "$MODULE_DIR"
-
-# Arguments
-target=${1:?"target is not set"}
-
-if [[ "$target" == "pypi" ]] ; then
-  flit publish --repository "${target}" --pypirc "${MODULE_DIR}/.pypirc"
-elif [[ "$target" == "testpypi" ]] ; then
-  flit publish --repository "${target}" --pypirc "${MODULE_DIR}/.pypirc"
-else
-  echo "No such target ${target}"
-  exit 1
+if ! command -v "bq-validator" &> /dev/null  ; then
+    echo "bq-validator could not be found"
+    exit 1
 fi

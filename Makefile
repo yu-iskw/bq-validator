@@ -35,3 +35,11 @@ build: clean format test
 
 clean:
 	bash ./dev/clean.sh
+
+# Publish to pypi
+publish:
+	bash ./dev/publish.sh "pypi"
+
+# Publish to testpypi
+test-publish:
+	bash ./dev/publish.sh "testpypi"
