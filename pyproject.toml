@@ -8,7 +8,7 @@ name = "bq_validator"
 [project]
 name = "bq-validator"
 authors = [
-    {name = "yu-iskw", email = "yuu.ishikawa-bq-validator@gmail.com" },
+    {name = "yu-iskw"},
 ]
 dynamic = ["version", "description"]
 dependencies = [
