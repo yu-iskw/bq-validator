@@ -28,6 +28,10 @@ click_completion.init()
 
 @click.command()
 @click.argument('path', type=click.Path(exists=True))
+@click.option("--quota_project",
+              type=str,
+              required=False,
+              help="BigQuery client project ID")
 @click.option("--client_project",
               type=str,
               required=False,
@@ -41,7 +45,9 @@ click_completion.init()
               required=False,
               help="Impersonate service account email")
 @click.version_option(version=bq_validator.__version__)
-def main(path: str, client_project: Optional[str],
+def main(path: str,
+         quota_project: Optional[str],
+         client_project: Optional[str],
          client_location: Optional[str],
          impersonate_service_account: Optional[str]):
     """Validate BigQuery queries
@@ -52,6 +58,7 @@ def main(path: str, client_project: Optional[str],
     # Create a BigQuery client
     client = create_bigquery_client(
         client_project_id=client_project,
+        quota_project_id=quota_project,
         location=client_location,
         impersonate_service_account=impersonate_service_account)
     # Validate queries

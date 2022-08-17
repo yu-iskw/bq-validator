@@ -26,6 +26,7 @@ DEFAULT_SCOPES = [
 
 
 def create_bigquery_client(client_project_id: Optional[str] = None,
+                           quota_project_id: Optional[str] = None,
                            location: Optional[str] = None,
                            impersonate_service_account: Optional[str] = None,
                            scopes: Optional[List[str]] = None,
@@ -33,7 +34,8 @@ def create_bigquery_client(client_project_id: Optional[str] = None,
     """Get a BigQuery client
 
     Args:
-        client_project_id: The default project ID
+        client_project_id: The client project ID
+        quota_project_id: The quota project ID
         location: The job location
         impersonate_service_account: The service account email
         scopes: scopes
@@ -44,7 +46,7 @@ def create_bigquery_client(client_project_id: Optional[str] = None,
     """
     # pylint: disable=R1705
     if impersonate_service_account is None:
-        credentials = get_default_credentials(project_id=client_project_id)
+        credentials = get_default_credentials(project_id=quota_project_id)
         return bigquery.Client(credentials=credentials,
                                project=client_project_id,
                                location=location)
