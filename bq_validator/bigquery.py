@@ -53,7 +53,7 @@ def create_bigquery_client(client_project_id: Optional[str] = None,
     else:
         credentials = get_impersonate_credentials(
             impersonate_service_account=impersonate_service_account,
-            quoted_project_id=client_project_id,
+            quoted_project_id=quota_project_id,
             scopes=scopes,
             lifetime=lifetime)
         return bigquery.Client(credentials=credentials,
