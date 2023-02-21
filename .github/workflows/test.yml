@@ -10,7 +10,7 @@ on:
       - 'tests/**/*.py'
   push:
     branches:
-      - master
+      - main
 
 jobs:
   test:
