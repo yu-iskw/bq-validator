@@ -117,4 +117,4 @@ def validate_query(client: bigquery.Client,
         return True, None
     # pylint: disable=W0703
     except Exception as e:
-        return False, e
+        return False, str(e).strip()
