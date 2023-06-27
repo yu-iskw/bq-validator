@@ -12,6 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import json
 import sys
 from typing import Optional
 
@@ -45,9 +46,7 @@ click_completion.init()
               required=False,
               help="Impersonate service account email")
 @click.version_option(version=bq_validator.__version__)
-def main(path: str,
-         quota_project: Optional[str],
-         client_project: Optional[str],
+def main(path: str, quota_project: Optional[str], client_project: Optional[str],
          client_location: Optional[str],
          impersonate_service_account: Optional[str]):
     """Validate BigQuery queries
@@ -68,9 +67,11 @@ def main(path: str,
         query = read_file(path=query_file)
         is_valid, error_message = validate_query(client=client, query=query)
         if is_valid is False:
-            errors[query_file] = error_message
+            errors[query_file] = {
+                "query": query,
+                "error": error_message,
+            }
     # Show errors
     if len(errors) > 0:
-        for file, error_message in errors.items():
-            click.echo(f"{file}: {error_message}")
+        click.echo(json.dumps(errors, indent=2))
         sys.exit(1)
