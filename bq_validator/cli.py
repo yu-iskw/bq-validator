@@ -21,7 +21,7 @@ import click_completion
 
 import bq_validator
 from bq_validator.bigquery import create_bigquery_client, validate_query
-from bq_validator.utils import read_file, get_sql_files
+from bq_validator.utils import get_sql_files, read_file
 
 # Initialize click-completion
 click_completion.init()

@@ -1,11 +1,22 @@
 # Set up an environment
 .PHONEY: setup
-setup:
+setup: setup-python setup-pre-commit
+
+.PHONEY: setup-python
+setup-python:
 	bash ./dev/setup.sh
+
+.PHONEY: setup-pre-commit
+setup-pre-commit:
+	pre-commit install
 
 # Check all the coding style.
 .PHONY: lint
-lint: lint-shell lint-python
+lint: lint-shell lint-python lint-pre-commit
+
+.PHONE: lint-pre-commit
+lint-pre-commit:
+	pre-commit run --all-files
 
 # Check the coding style for the shell scripts.
 .PHONY: lint-shell
