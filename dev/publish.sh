@@ -25,6 +25,7 @@ cd "$MODULE_DIR"
 target=${1:?"target is not set"}
 
 # SEE https://flit.readthedocs.io/en/latest/reproducible.html
+# shellcheck disable=SC2034
 SOURCE_DATE_EPOCH=$(date +%s)
 
 if [[ "$target" == "pypi" ]] ; then
