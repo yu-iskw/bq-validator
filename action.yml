@@ -1,0 +1,19 @@
+name: Run bq-validator
+description: Run bq-validator
+author: yu-iskw
+
+inputs:
+  bq-validator-version:
+    description: bq-validator version
+    required: false
+
+runs:
+  using: docker
+  image: Dockerfile
+  env:
+    BQ_VALIDATOR_VERSION: ${{ inputs.bq-validator-version }}
+
+# Ref: https://haya14busa.github.io/github-action-brandings/
+branding:
+  icon: check
+  color: blue

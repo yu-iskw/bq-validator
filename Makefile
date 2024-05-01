@@ -54,3 +54,6 @@ publish:
 # Publish to testpypi
 test-publish:
 	bash ./dev/publish.sh "testpypi"
+
+build-docker:
+	docker build --rm -t "bq-validator:dev" .
