@@ -24,7 +24,6 @@ pip install -U bq-validator
 
 ```bash
 $ bq-validator --help
-
 Usage: bq-validator [OPTIONS] PATH
 
   Validate BigQuery queries
@@ -38,6 +37,8 @@ Options:
   --client_location TEXT          BigQuery client location
   --impersonate_service_account TEXT
                                   Impersonate service account email
+  --num_parallels INTEGER         Number of parallel query validations
+  --verbose                       Enable verbose output
   --version                       Show the version and exit.
   --help                          Show this message and exit.
 ```
