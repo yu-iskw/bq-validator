@@ -16,12 +16,12 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Python
         id: python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.9"
+          python-version: "3.11"
       - name: Install Flit
         if: steps.python.outputs.cache-hit != 'true'
         run: bash dev/setup.sh
