@@ -10,6 +10,10 @@ setup-python:
 setup-pre-commit:
 	pre-commit install
 
+.PHONEY: update-pre-commit
+update-pre-commit:
+	pre-commit autoupdate
+
 # Check all the coding style.
 .PHONY: lint
 lint: lint-shell lint-python lint-pre-commit
