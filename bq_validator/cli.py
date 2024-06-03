@@ -12,6 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import sys
 import concurrent.futures
 import json
 from typing import Optional
@@ -90,6 +91,7 @@ def main(
     # Show errors
     if len(errors) > 0:
         click.echo(json.dumps(errors, indent=2))
+        sys.exit(1)
 
 
 def validate_and_collect_errors(client, query_file, verbose: Optional[bool] = False):
