@@ -80,8 +80,8 @@ def main(
     errors = {}
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_parallels) as executor:
         futures = {
-            executor.submit(validate_and_collect_errors, client, sql_files, verbose)
-            for sql_files in sql_files
+            executor.submit(validate_and_collect_errors, client, sql_file, verbose)
+            for sql_file in sql_files
         }
         for future in concurrent.futures.as_completed(futures):
             result = future.result()
