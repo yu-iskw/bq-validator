@@ -1,0 +1,8 @@
+# Prettier friendly markdownlint config (all formatting rules disabled)
+extends: markdownlint/style/prettier
+
+MD033:
+  allowed_elements: [a, img]
+
+MD041:
+  allow_preamble: true
