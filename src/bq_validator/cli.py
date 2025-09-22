@@ -20,7 +20,6 @@ from typing import Optional
 import click
 import click_completion
 
-import bq_validator
 from bq_validator.bigquery import create_bigquery_client, validate_query
 from bq_validator.utils import get_sql_files, read_file
 
@@ -53,7 +52,7 @@ click_completion.init()
     help="Number of parallel query validations",
 )
 @click.option("--verbose", is_flag=True, help="Enable verbose output")
-@click.version_option(version=bq_validator.__version__)
+# pylint: disable=R0917
 def main(
     path: str,
     quota_project: Optional[str],

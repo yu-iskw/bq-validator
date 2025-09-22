@@ -19,11 +19,13 @@ from bq_validator.utils import get_project_root, get_sql_files, read_file
 
 
 class TestUtils(unittest.TestCase):
+    """Test the utils module"""
 
     def test_get_project_root(self):
         self.assertEqual(
             get_project_root(),
-            os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
+            os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
+        )
 
     def test_get_sql_files(self):
         path = os.path.join(get_project_root(), "tests", "resources", "target")
