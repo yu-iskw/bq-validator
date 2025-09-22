@@ -5,15 +5,17 @@ on:
     types:
       - created
 
+env:
+  PYTHON_PACKAGE_NAME: bq-validator
+  PYTHON_NAME_SPACE: bq_validator
 jobs:
   publish:
+    permissions:
+      id-token: write
     runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
-    env:
-      PYTHON_PACKAGE_NAME: YOUR_PYTHON_PACKAGE_NAME
-      PYTHON_NAME_SPACE: YOUR_PYTHON_NAME_SPACE
     steps:
       - uses: actions/checkout@v5
       - name: Set up Python
@@ -39,8 +41,6 @@ jobs:
     defaults:
       run:
         shell: bash
-    env:
-      PYTHON_PACKAGE_NAME: YOUR_PYTHON_PACKAGE_NAME
     steps:
       - uses: actions/checkout@v5
       - name: Set up Python
