@@ -3,8 +3,8 @@ name: Upgrade Trunk
 on:
   workflow_dispatch: {}
   schedule:
-    # Runs every Wednesday (in the UTC timezone)
-    - cron: 0 0 * * 3
+    # Run on every 1st day of the month
+    - cron: 0 0 1 * *
 
 permissions: read-all
 
