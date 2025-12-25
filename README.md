@@ -41,6 +41,7 @@ Options:
                                   Impersonate service account email
   --num_parallels INTEGER         Number of parallel query validations
   --verbose                       Enable verbose output
-  --version                       Show the version and exit.
+  --warn-on-empty                 Show just warning(s) not to raise error(s)
+                                  if the given file(s) are empty
   --help                          Show this message and exit.
 ```
