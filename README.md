@@ -8,11 +8,19 @@
 
 # bq-validator
 
-This is a yet another python-based BigQuery query validator.
+This is a yet another python-based BigQuery query validator with advanced features for CI/CD pipelines and development workflows.
 
 The `bq query --dry_run` command enables us to validate queries.
 However, the `bq` command doesn't support service account impersonation, even though it supports workload identity federation credentials at Google Cloud SDK 390.0.0.
 The `bq-validator` command would be useful, when we take advantage of service account impersonation to validate BigQuery queries.
+
+## Features
+
+- **Parallel validation** of multiple SQL files
+- **Service account impersonation** support
+- **Statistics output** in JSON format for CI/CD integration
+- **Flexible error handling** with warning options for empty files
+- **Structured JSON output** for programmatic processing
 
 ## Install
 
@@ -43,5 +51,72 @@ Options:
   --verbose                       Enable verbose output
   --warn-on-empty                 Show just warning(s) not to raise error(s)
                                   if the given file(s) are empty
+  --stats                         Show the summary of the results
   --help                          Show this message and exit.
+```
+
+## Examples
+
+### Basic Usage
+
+Validate a single SQL file:
+
+```bash
+bq-validator path/to/query.sql
+```
+
+Validate all SQL files in a directory:
+
+```bash
+bq-validator path/to/sql/directory/
+```
+
+### Advanced Options
+
+Show validation statistics in JSON format:
+
+```bash
+bq-validator --stats path/to/sql/directory/
+```
+
+Treat empty SQL files as warnings instead of errors:
+
+```bash
+bq-validator --warn-on-empty path/to/sql/directory/
+```
+
+Combine options for detailed validation:
+
+```bash
+bq-validator --stats --warn-on-empty --verbose path/to/sql/directory/
+```
+
+### Output Examples
+
+With `--stats` option, you'll see a JSON summary:
+
+```json
+{
+  "summary": {
+    "total": 5,
+    "success": 3,
+    "errors": 1,
+    "warnings": 1
+  }
+}
+```
+
+Errors and warnings are shown as JSON objects:
+
+```json
+{
+  "path/to/invalid.sql": {
+    "query": "SELECT invalid_column FROM invalid_table",
+    "error": "Table \"invalid_table\" must be qualified with a dataset..."
+  },
+  "path/to/empty.sql": {
+    "query": "",
+    "warning": "Query is empty"
+  }
+}
 ```

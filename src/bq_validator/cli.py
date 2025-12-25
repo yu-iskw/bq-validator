@@ -15,6 +15,9 @@
 import concurrent.futures
 import json
 import sys
+from collections import Counter
+from dataclasses import dataclass
+from enum import Enum
 from typing import Optional
 
 import click
@@ -25,6 +28,21 @@ from bq_validator.utils import get_sql_files, read_file
 
 # Initialize click-completion
 click_completion.init()
+
+
+class ValidationStatus(Enum):
+    """Enumeration of possible validation result statuses."""
+    SUCCESS = "success"
+    ERROR = "error"
+    WARNING = "warning"
+
+
+@dataclass
+class ValidationResult:
+    """Represents the result of validating a single SQL file."""
+    status: ValidationStatus  # SUCCESS, ERROR, or WARNING
+    file_path: Optional[str] = None  # None for success cases
+    details: Optional[dict] = None   # None for success cases
 
 
 @click.command()
@@ -57,6 +75,7 @@ click_completion.init()
     is_flag=True,
     help="Show just warning(s) not to raise error(s) if the given file(s) are empty",
 )
+@click.option("--stats", is_flag=True, help="Show the summary of the results")
 # pylint: disable=R0917
 def main(
     path: str,
@@ -67,6 +86,7 @@ def main(
     num_parallels: Optional[int] = 1,
     verbose: Optional[bool] = False,
     warn_on_empty: Optional[bool] = False,
+    stats: Optional[bool] = False,
 ):
     """Validate BigQuery queries
 
@@ -80,9 +100,24 @@ def main(
         location=client_location,
         impersonate_service_account=impersonate_service_account,
     )
-    # Validate queries in parallel
+
+    # Run validation and get results
+    results = validate_queries(client, path, num_parallels, verbose, warn_on_empty)
+
+    # Process and display results
+    display_results(results, stats)
+
+
+def validate_queries(
+    client,
+    path: str,
+    num_parallels: Optional[int],
+    verbose: Optional[bool],
+    warn_on_empty: Optional[bool],
+) -> list:
+    """Validate all SQL queries in the given path"""
     sql_files = get_sql_files(path=path)
-    errors = {}
+    results = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_parallels) as executor:
         futures = {
             executor.submit(
@@ -91,13 +126,38 @@ def main(
             for sql_file in sql_files
         }
         for future in concurrent.futures.as_completed(futures):
-            result = future.result()
-            if result:
-                query_file, error_details = result
-                errors[query_file] = error_details
-    # Show errors
+            results.append(future.result())
+    return results
+
+
+def display_results(results: list, show_stats: Optional[bool]):
+    """Process and display validation results"""
+    # Process results
+    errors = {
+        result.file_path: result.details
+        for result in results
+        if result.status in (ValidationStatus.ERROR, ValidationStatus.WARNING)
+    }
+
+    # Show summary when requested
+    if show_stats:
+        status_counts = Counter(result.status for result in results)
+        stats_data = {
+            "summary": {
+                "total": len(results),
+                "success": status_counts[ValidationStatus.SUCCESS],
+                "errors": status_counts[ValidationStatus.ERROR],
+                "warnings": status_counts[ValidationStatus.WARNING]
+            }
+        }
+        click.echo(json.dumps(stats_data, indent=2))
+
+    # Show errors regardless of stats flag
     if len(errors) > 0:
         click.echo(json.dumps(errors, indent=2))
+
+    # Exit with error code if there are actual errors (not just warnings)
+    if any(result.status == ValidationStatus.ERROR for result in results):
         sys.exit(1)
 
 
@@ -116,13 +176,25 @@ def validate_and_collect_errors(
             if verbose:
                 click.echo(f"Warning: {query_file} is empty. Skipping validation.")
             # Return warning if the query is empty and warn_on_empty is set
-            return query_file, {"query": query, "warning": "Query is empty"}
+            return ValidationResult(
+                status=ValidationStatus.WARNING,
+                file_path=query_file,
+                details={"query": query, "warning": "Query is empty"}
+            )
         # Return error if the query is empty and warn_on_empty is not set
-        return query_file, {"query": query, "error": "Query is empty"}
+        return ValidationResult(
+            status=ValidationStatus.ERROR,
+            file_path=query_file,
+            details={"query": query, "error": "Query is empty"}
+        )
 
     is_valid, error_message = validate_query(client=client, query=query)
     if not is_valid:
         if verbose:
             click.echo(f"Error: {error_message}")
-        return query_file, {"query": query, "error": error_message}
-    return None
+        return ValidationResult(
+            status=ValidationStatus.ERROR,
+            file_path=query_file,
+            details={"query": query, "error": error_message}
+        )
+    return ValidationResult(status=ValidationStatus.SUCCESS)
