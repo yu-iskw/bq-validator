@@ -49,7 +49,7 @@ class TestCLI(unittest.TestCase):
         finally:
             os.remove(temp_path)
 
-    @patch('bq_validator.cli.create_bigquery_client')
+    @patch("bq_validator.cli.create_bigquery_client")
     def test_cli_stats_option(self, mock_create_client):
         # Mock the BigQuery client since we don't need it for empty files
         mock_create_client.return_value = None
