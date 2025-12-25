@@ -56,4 +56,5 @@ jobs:
           python3 -m pip install -U "${{ env.PYTHON_PACKAGE_NAME}}"
       - name: Test package
         run: |
-          python -m "${{ env.PYTHON_NAME_SPACE }}"
+          python -m "${{ env.PYTHON_NAME_SPACE }}" --help
+          "${{ env.PYTHON_PACKAGE_NAME }}" --help
