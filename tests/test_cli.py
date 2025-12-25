@@ -50,16 +50,15 @@ class TestCLI(unittest.TestCase):
 
     def test_cli_stats_option(self):
         runner = CliRunner()
-        with tempfile.TemporaryDirectory() as tmpdir:
-            # Create a few files
-            file1 = os.path.join(tmpdir, "test1.sql")
-            with open(file1, "w", encoding="utf-8") as f:
-                f.write("")  # empty
+        with tempfile.NamedTemporaryFile(suffix=".sql", mode="w", delete=False) as f:
+            f.write("")  # empty file
+            temp_file = f.name
 
-            # Running bq-validator on this directory
+        try:
+            # Running bq-validator on the empty file
             # We use --warn-on-empty to avoid exit 1, and --stats to see summary
             # Note: We don't actually need a real BQ client for empty files
-            result = runner.invoke(main, [tmpdir, "--warn-on-empty", "--stats"])
+            result = runner.invoke(main, [temp_file, "--warn-on-empty", "--stats"])
 
             self.assertEqual(result.exit_code, 0)
             self.assertIn('"summary":', result.output)
@@ -67,6 +66,8 @@ class TestCLI(unittest.TestCase):
             self.assertIn('"success": 0', result.output)
             self.assertIn('"errors": 0', result.output)
             self.assertIn('"warnings": 1', result.output)
+        finally:
+            os.unlink(temp_file)
 
 
 if __name__ == "__main__":
