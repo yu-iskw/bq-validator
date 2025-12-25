@@ -52,6 +52,11 @@ click_completion.init()
     help="Number of parallel query validations",
 )
 @click.option("--verbose", is_flag=True, help="Enable verbose output")
+@click.option(
+    "--warn-on-empty",
+    is_flag=True,
+    help="Show just warning(s) not to raise error(s) if the given file(s) are empty",
+)
 # pylint: disable=R0917
 def main(
     path: str,
@@ -61,6 +66,7 @@ def main(
     impersonate_service_account: Optional[str],
     num_parallels: Optional[int] = 1,
     verbose: Optional[bool] = False,
+    warn_on_empty: Optional[bool] = False,
 ):
     """Validate BigQuery queries
 
@@ -79,7 +85,9 @@ def main(
     errors = {}
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_parallels) as executor:
         futures = {
-            executor.submit(validate_and_collect_errors, client, sql_file, verbose)
+            executor.submit(
+                validate_and_collect_errors, client, sql_file, verbose, warn_on_empty
+            )
             for sql_file in sql_files
         }
         for future in concurrent.futures.as_completed(futures):
@@ -93,11 +101,25 @@ def main(
         sys.exit(1)
 
 
-def validate_and_collect_errors(client, query_file, verbose: Optional[bool] = False):
+def validate_and_collect_errors(
+    client,
+    query_file,
+    verbose: Optional[bool] = False,
+    warn_on_empty: Optional[bool] = False,
+):
     """Validate a query and collect errors if any"""
     if verbose:
         click.echo(f"Validating {query_file}")
     query = read_file(path=query_file)
+    if not query:
+        if warn_on_empty:
+            if verbose:
+                click.echo(f"Warning: {query_file} is empty. Skipping validation.")
+            # Return warning if the query is empty and warn_on_empty is set
+            return query_file, {"query": query, "warning": "Query is empty"}
+        # Return error if the query is empty and warn_on_empty is not set
+        return query_file, {"query": query, "error": "Query is empty"}
+
     is_valid, error_message = validate_query(client=client, query=query)
     if not is_valid:
         if verbose:
