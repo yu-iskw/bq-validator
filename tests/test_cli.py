@@ -1,6 +1,7 @@
 import os
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from click.testing import CliRunner
 
@@ -48,7 +49,11 @@ class TestCLI(unittest.TestCase):
         finally:
             os.remove(temp_path)
 
-    def test_cli_stats_option(self):
+    @patch('bq_validator.cli.create_bigquery_client')
+    def test_cli_stats_option(self, mock_create_client):
+        # Mock the BigQuery client since we don't need it for empty files
+        mock_create_client.return_value = None
+
         runner = CliRunner()
         with tempfile.NamedTemporaryFile(suffix=".sql", mode="w", delete=False) as f:
             f.write("")  # empty file
@@ -57,7 +62,6 @@ class TestCLI(unittest.TestCase):
         try:
             # Running bq-validator on the empty file
             # We use --warn-on-empty to avoid exit 1, and --stats to see summary
-            # Note: We don't actually need a real BQ client for empty files
             result = runner.invoke(main, [temp_file, "--warn-on-empty", "--stats"])
 
             self.assertEqual(result.exit_code, 0)
