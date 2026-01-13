@@ -15,6 +15,7 @@
 import concurrent.futures
 import json
 import sys
+import threading
 from collections import Counter
 from dataclasses import dataclass
 from enum import Enum
@@ -118,10 +119,10 @@ def validate_queries(
     """Validate all SQL queries in the given path"""
     sql_files = get_sql_files(path=path)
     results = []
-    with concurrent.futures.ThreadPoolExecutor(max_workers=num_parallels) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_parallels, thread_name_prefix="Worker") as executor:
         futures = {
             executor.submit(
-                validate_and_collect_errors, client, sql_file, verbose, warn_on_empty
+                validate_and_collect_errors, client, sql_file, verbose, warn_on_empty, num_parallels
             )
             for sql_file in sql_files
         }
@@ -166,35 +167,58 @@ def validate_and_collect_errors(
     query_file,
     verbose: Optional[bool] = False,
     warn_on_empty: Optional[bool] = False,
+    total_workers: Optional[int] = 1,
 ):
     """Validate a query and collect errors if any"""
-    if verbose:
-        click.echo(f"Validating {query_file}")
-    query = read_file(path=query_file)
-    if not query:
-        if warn_on_empty:
-            if verbose:
-                click.echo(f"Warning: {query_file} is empty. Skipping validation.")
-            # Return warning if the query is empty and warn_on_empty is set
-            return ValidationResult(
-                status=ValidationStatus.WARNING,
-                file_path=query_file,
-                details={"query": query, "warning": "Query is empty"}
-            )
-        # Return error if the query is empty and warn_on_empty is not set
-        return ValidationResult(
-            status=ValidationStatus.ERROR,
-            file_path=query_file,
-            details={"query": query, "error": "Query is empty"}
-        )
+    worker_name = threading.current_thread().name
+    # Extract worker index from thread name (e.g., "Worker_0" -> 0)
+    try:
+        worker_index = int(worker_name.split("_")[-1]) + 1  # Add 1 to make it 1-based
+    except (ValueError, IndexError):
+        worker_index = 1  # Fallback if parsing fails
 
-    is_valid, error_message = validate_query(client=client, query=query)
-    if not is_valid:
+    worker_prefix = f"[Worker {worker_index} / {total_workers}]"
+    if verbose:
+        click.echo(f"{worker_prefix} Validating {query_file}")
+    try:
+        query = read_file(path=query_file)
+        if not query:
+            if warn_on_empty:
+                if verbose:
+                    click.echo(f"{worker_prefix} Warning: {query_file} is empty. Skipping validation.")
+                # Return warning if the query is empty and warn_on_empty is set
+                return ValidationResult(
+                    status=ValidationStatus.WARNING,
+                    file_path=query_file,
+                    details={"query": query, "warning": "Query is empty"}
+                )
+            # Return error if the query is empty and warn_on_empty is not set
+            if verbose:
+                click.echo(f"{worker_prefix} Error in {query_file}: Query is empty")
+            return ValidationResult(
+                status=ValidationStatus.ERROR,
+                file_path=query_file,
+                details={"query": query, "error": "Query is empty"}
+            )
+
+        is_valid, error_message = validate_query(client=client, query=query)
+        if not is_valid:
+            if verbose:
+                click.echo(f"{worker_prefix} Error in {query_file}: {error_message}")
+            return ValidationResult(
+                status=ValidationStatus.ERROR,
+                file_path=query_file,
+                details={"query": query, "error": error_message}
+            )
         if verbose:
-            click.echo(f"Error: {error_message}")
+            click.echo(f"{worker_prefix} Success: {query_file} is valid")
+        return ValidationResult(status=ValidationStatus.SUCCESS)
+    except Exception as e:  # pylint: disable=broad-except
+        error_msg = str(e).strip()
+        if verbose:
+            click.echo(f"{worker_prefix} Error in {query_file}: {error_msg}")
         return ValidationResult(
             status=ValidationStatus.ERROR,
             file_path=query_file,
-            details={"query": query, "error": error_message}
+            details={"query": "", "error": error_msg}
         )
-    return ValidationResult(status=ValidationStatus.SUCCESS)
