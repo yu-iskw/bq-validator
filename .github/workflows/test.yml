@@ -41,5 +41,4 @@ jobs:
           uv pip install -e .
           uv run python -c 'import ${{ env.PYTHON_PACKAGE_NAME }}'
       - name: Trunk Check
-        if: github.event_name != 'push'
         uses: trunk-io/trunk-action@v1
